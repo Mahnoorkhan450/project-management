@@ -1,14 +1,25 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
 }
 
+// ==========================================
+// ENUMS
+// ==========================================
+
 enum Role {
   USER
   ADMIN
+}
+
+enum TeamRole {
+  MEMBER
+  TEAM_LEAD
+  MANAGER
 }
 
 enum ProjectStatus {
@@ -29,20 +40,90 @@ enum TaskPriority {
   HIGH
 }
 
+// ==========================================
+// USER
+// ==========================================
+
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String
-  email         String    @unique
-  password      String
-  role          Role      @default(USER)
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(USER)
 
-  projects      Project[]
-  createdTasks  Task[]    @relation("TaskCreator")
-  assignedTasks Task[]    @relation("TaskAssignee")
+  departmentId Int?
+  department   Department? @relation(fields: [departmentId], references: [id])
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  teamMemberships TeamMember[]
+  projects        Project[]
+  createdTasks    Task[]         @relation("TaskCreator")
+  assignedTasks   Task[]         @relation("TaskAssignee")
+  notifications   Notification[]
+  settings        UserSettings?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
+
+// ==========================================
+// DEPARTMENT
+// ==========================================
+
+model Department {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+
+  members User[]
+  teams   Team[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// TEAM
+// ==========================================
+
+model Team {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  members  TeamMember[]
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// TEAM MEMBER
+// ==========================================
+
+model TeamMember {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  teamId Int
+
+  role TeamRole @default(MEMBER)
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, teamId])
+}
+
+// ==========================================
+// PROJECT
+// ==========================================
 
 model Project {
   id          Int           @id @default(autoincrement())
@@ -51,33 +132,92 @@ model Project {
   status      ProjectStatus @default(ACTIVE)
 
   createdById Int
-  createdBy   User          @relation(fields: [createdById], references: [id])
+  createdBy   User @relation(fields: [createdById], references: [id])
 
-  tasks       Task[]
+  teamId Int?
+  team   Team? @relation(fields: [teamId], references: [id], onDelete: SetNull)
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  tasks Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+// ==========================================
+// TASK
+// ==========================================
+
 model Task {
-  id           Int          @id @default(autoincrement())
-  title        String
-  description  String?
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
 
-  status       TaskStatus   @default(TODO)
-  priority     TaskPriority @default(MEDIUM)
+  status   TaskStatus   @default(TODO)
+  priority TaskPriority @default(MEDIUM)
 
-  projectId    Int
-  project      Project      @relation(fields: [projectId], references: [id])
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  createdById  Int
-  createdBy    User         @relation("TaskCreator", fields: [createdById], references: [id])
+  createdById Int
+  createdBy   User @relation("TaskCreator", fields: [createdById], references: [id])
 
   assignedToId Int?
-  assignedTo   User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  assignedTo   User? @relation("TaskAssignee", fields: [assignedToId], references: [id])
 
-  dueDate      DateTime?
+  dueDate DateTime?
 
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// NOTIFICATION
+// ==========================================
+
+model Notification {
+  id      Int     @id @default(autoincrement())
+  title   String
+  message String
+  type    String?
+  isRead  Boolean @default(false)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+// ==========================================
+// USER SETTINGS
+// ==========================================
+
+model UserSettings {
+  id Int @id @default(autoincrement())
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // General
+  language   String @default("English")
+  timeZone   String @default("Asia/Karachi")
+  dateFormat String @default("DD/MM/YYYY")
+
+  // Notifications
+  taskNotifications Boolean @default(true)
+  projectUpdates    Boolean @default(true)
+  teamActivity      Boolean @default(false)
+
+  // Appearance
+  theme String @default("light")
+
+  // Preferences
+  defaultTaskPriority TaskPriority @default(MEDIUM)
+  defaultTaskStatus   TaskStatus   @default(TODO)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

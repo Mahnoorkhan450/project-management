@@ -1,0 +1,345 @@
+@import "tailwindcss";
+
+/* =========================================
+   TAILWIND DARK MODE
+========================================= */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================
+   LIGHT THEME VARIABLES
+========================================= */
+
+:root {
+  --background: #f7f8f7;
+  --foreground: #182124;
+
+  --surface: #ffffff;
+  --surface-secondary: #f5f7f7;
+
+  --border: #dde3e3;
+  --border-light: #e8ecec;
+
+  --text-primary: #182124;
+  --text-secondary: #6e7b7d;
+
+  --primary: #064b52;
+  --primary-dark: #04383e;
+}
+
+/* =========================================
+   DARK THEME VARIABLES
+========================================= */
+
+html.dark {
+  --background: #101719;
+  --foreground: #f1f5f5;
+
+  --surface: #172326;
+  --surface-secondary: #1d2b2e;
+
+  --border: #293638;
+  --border-light: #344649;
+
+  --text-primary: #f1f5f5;
+  --text-secondary: #aab8ba;
+
+  /* brighter teal for dark mode */
+  --primary: #16777d;
+  --primary-dark: #0f646a;
+
+  /* active / selected */
+  --active-bg: #234448;
+  --active-text: #8ed6d2;
+
+  /* hover */
+  --hover-bg: #20383b;
+}
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* =========================================
+   BODY
+========================================= */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* =========================================
+   DARK MODE
+   PAGE BACKGROUNDS
+========================================= */
+
+html.dark [class~="bg-[#F7F8F7]"],
+html.dark [class~="bg-[#f7f8f7]"],
+html.dark [class~="bg-[#FAF8FC]"],
+html.dark [class~="bg-[#faf8fc]"],
+html.dark [class~="bg-gray-50"] {
+  background-color: var(--background) !important;
+}
+
+/* =========================================
+   DARK MODE
+   WHITE SURFACES
+========================================= */
+
+html.dark [class~="bg-white"] {
+  background-color: var(--surface) !important;
+}
+
+/* =========================================
+   DARK MODE
+   GRAY SURFACES
+========================================= */
+
+html.dark [class~="bg-gray-100"] {
+  background-color: var(--surface) !important;
+}
+
+html.dark [class~="bg-gray-200"] {
+  background-color: #293638 !important;
+}
+
+/* =========================================
+   DARK MODE
+   LIGHT TEAL / GRAY SURFACES
+========================================= */
+
+html.dark [class~="bg-[#F3F6F6]"],
+html.dark [class~="bg-[#F5F7F7]"],
+html.dark [class~="bg-[#F2F6F6]"] {
+  background-color: #243437 !important;
+}
+
+/* =========================================
+   DARK MODE
+   ACTIVE / SELECTED ITEMS
+========================================= */
+
+/* Existing active background */
+html.dark [class~="bg-[#DCE9E9]"],
+html.dark [class~="bg-[#dce9e9]"] {
+  background-color: var(--active-bg) !important;
+}
+
+/* Selected elements */
+html.dark [aria-selected="true"] {
+  background-color: var(--active-bg) !important;
+}
+
+/* Active class */
+html.dark .active {
+  background-color: var(--active-bg) !important;
+}
+
+/* =========================================
+   DARK MODE
+   HOVER
+========================================= */
+
+html.dark [class~="hover:bg-[#F3F6F6]"]:hover,
+html.dark [class~="hover:bg-[#F5F7F7]"]:hover,
+html.dark [class~="hover:bg-[#F2F6F6]"]:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+/* =========================================
+   DARK MODE
+   GREEN BACKGROUNDS
+========================================= */
+
+html.dark [class~="bg-[#064B52]"] {
+  background-color: var(--primary) !important;
+}
+
+html.dark [class~="bg-[#04383E]"] {
+  background-color: var(--primary-dark) !important;
+}
+
+/* =========================================
+   DARK MODE
+   GREEN TEXT
+========================================= */
+
+html.dark [class~="text-[#064B52]"],
+html.dark [class~="text-[#04383E]"] {
+  color: #72c9c4 !important;
+}
+
+/* Active green text */
+html.dark [class~="bg-[#DCE9E9]"] [class~="text-[#064B52]"],
+html.dark [class~="bg-[#dce9e9]"] [class~="text-[#064B52]"] {
+  color: var(--active-text) !important;
+}
+
+/* =========================================
+   DARK MODE
+   GREEN BORDERS
+========================================= */
+
+html.dark [class~="border-[#064B52]"],
+html.dark [class~="border-[#04383E]"] {
+  border-color: #3d9b9f !important;
+}
+
+/* =========================================
+   DARK MODE
+   GREEN HOVER
+========================================= */
+
+html.dark [class~="hover:bg-[#064B52]"]:hover {
+  background-color: #1b858b !important;
+}
+
+html.dark [class~="hover:bg-[#04383E]"]:hover {
+  background-color: #16777d !important;
+}
+
+/* =========================================
+   DARK MODE
+   TEXT COLORS
+========================================= */
+
+html.dark [class~="text-[#182124]"] {
+  color: #f1f5f5 !important;
+}
+
+html.dark [class~="text-[#6E7B7D]"],
+html.dark [class~="text-[#6e7b7d]"],
+html.dark [class~="text-[#536063]"] {
+  color: #aab8ba !important;
+}
+
+html.dark [class~="text-gray-500"],
+html.dark [class~="text-gray-600"] {
+  color: #aab8ba !important;
+}
+
+html.dark [class~="text-gray-700"] {
+  color: #c5d0d1 !important;
+}
+
+/* =========================================
+   DARK MODE
+   BORDERS
+========================================= */
+
+html.dark [class~="border-[#DDE3E3]"],
+html.dark [class~="border-[#dde3e3]"],
+html.dark [class~="border-gray-200"] {
+  border-color: var(--border) !important;
+}
+
+html.dark [class~="border-[#E8ECEC]"],
+html.dark [class~="border-[#e8ecec]"],
+html.dark [class~="border-gray-300"] {
+  border-color: var(--border-light) !important;
+}
+
+/* =========================================
+   DARK MODE
+   FORM ELEMENTS
+========================================= */
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: var(--surface);
+  color: #f1f5f5;
+  border-color: var(--border);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #7f9295;
+}
+
+html.dark option {
+  background-color: var(--surface);
+  color: #f1f5f5;
+}
+
+/* =========================================
+   DARK MODE
+   CHECKBOX / RADIO
+========================================= */
+
+html.dark input[type="checkbox"],
+html.dark input[type="radio"] {
+  accent-color: #3d9b9f;
+}
+
+/* =========================================
+   DARK MODE
+   SCROLLBAR
+========================================= */
+
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #101719;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #344649;
+  border-radius: 999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #486064;
+}
+
+/* =========================================
+   TEXT SELECTION
+========================================= */
+
+::selection {
+  background: #cfe2e3;
+  color: #04383e;
+}
+
+html.dark ::selection {
+  background: #315054;
+  color: #f1f5f5;
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px) translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
